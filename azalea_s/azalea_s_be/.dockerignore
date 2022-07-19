@@ -1,0 +1,6 @@
+./azalea-strapi/tmp/
+./azalea-strapi/cache/
+./azalea-strapi/git/
+./azalea-strapi/build/
+./azalea-strapi/node_modules/
+./azalea-strapi/data/

@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  strapi:
+    build: ./azalea-strapi
+    image: strapi:latest
+    container_name: "strapi"
+    env_file: .env
+    environment:
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASS}
+      - MYSQL_ROOT_PASSWORD=${DB_PASS}
+      - TZ=${TZ}
+    volumes:
+      - ./azalea-strapi/config:/opt/app/config
+      - ./azalea-strapi/src:/opt/app/src
+      - ./azalea-strapi/package.json:/opt/package.json
+      - ./azalea-strapi/yarn.lock:/opt/yarn.lock # Replace with package-lock.json if using npm
+      - ./azalea-strapi/.env:/opt/app/.env
+    ports:
+      - "1337:1337"
+    networks:
+      - strapi
+    depends_on:
+      - strapidb
+
+  strapidb:
+    build: ./azalea-strapi-db
+    image: strapi-db:latest
+    container_name: "strapi-db"
