@@ -2,30 +2,42 @@ version: "3.8"
 
 services:
   strapi:
-    build: ./azalea-strapi
+    build: ./strapi
     image: strapi:latest
     container_name: "strapi"
     env_file: .env
     environment:
-      - MYSQL_DATABASE=${DB_NAME}
-      - MYSQL_USER=${DB_USER}
-      - MYSQL_PASSWORD=${DB_PASS}
-      - MYSQL_ROOT_PASSWORD=${DB_PASS}
-      - TZ=${TZ}
+      - DATABASE_CLIENT=${DATABASE_CLIENT}
+      - DATABASE_HOST=${DATABASE_HOST}
+      - DATABASE_PORT=${DATABASE_PORT}
+      - DATABASE_NAME=${DATABASE_NAME}
+      - DATABASE_USERNAME=${DATABASE_USERNAME}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
     volumes:
-      - ./azalea-strapi/config:/opt/app/config
-      - ./azalea-strapi/src:/opt/app/src
-      - ./azalea-strapi/package.json:/opt/package.json
-      - ./azalea-strapi/yarn.lock:/opt/yarn.lock # Replace with package-lock.json if using npm
-      - ./azalea-strapi/.env:/opt/app/.env
+      - ./strapi/config:/opt/app/config
+      - ./strapi/src:/opt/app/src
+      - ./strapi/package.json:/opt/package.json
+      - ./strapi/yarn.lock:/opt/yarn.lock # Replace with package-lock.json if using npm
+      - ./strapi/.env:/opt/app/.env
     ports:
       - "1337:1337"
-    networks:
-      - strapi
     depends_on:
       - strapidb
 
   strapidb:
-    build: ./azalea-strapi-db
-    image: strapi-db:latest
+    image: mysql:8
+    volumes:
+      - db-store:/var/lib/mysql
+      - ./logs:/var/log/mysql
+      - ./docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+    env_file: .env
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - TZ=${TZ}
     container_name: "strapi-db"
+
+volumes:
+  db-store:
