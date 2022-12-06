@@ -1,0 +1,30 @@
+{
+  "kind": "collectionType",
+  "collectionName": "blog_entries",
+  "info": {
+    "singularName": "blog-entry",
+    "pluralName": "blog-entries",
+    "displayName": "BlogEntry",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "categories": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::category.category",
+      "inversedBy": "blog_entries"
+    },
+    "description": {
+      "type": "richtext"
+    }
+  }
+}
